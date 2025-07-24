@@ -35,9 +35,9 @@ app.use(
 app.use(passUserToView); // pass user info to EJS templates
 
 app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
+  (req.session.user) ?
+    res.redirect(`/users/${req.session.user._id}/applications`) :
+    res.render('index.ejs');
 });
 
 app.use('/auth', authController); // auth routes
@@ -47,7 +47,3 @@ app.use('/users/:userId/applications', applicationsController); // application r
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
-
-// function deleteAllUsers(){
-//   const allUsers = ;
-// };
