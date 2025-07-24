@@ -44,13 +44,13 @@ router.get('/:id', async (req, res) => {
   };
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id/edit', async (req, res) => {
   try{
-    const currentUser = await User.findById(req.session._id);
+    const currentUser = await User.findById(req.session.user._id);
     const application = currentUser.applications.id(req.params.id);
     res.render('applications/edit.ejs', { application: application });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.redirect('/');
   };
 });
@@ -61,6 +61,19 @@ router.delete('/:id', async (req, res) => {
     currentUser.applications.id(req.params.id).deleteOne();
     await currentUser.save();
     res.redirect(`/users/${currentUser._id}/applications`);
+  } catch (err) {
+    console.log(err);
+    res.redirect('/');
+  };
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.session.user._id);
+    const application = currentUser.applications.id(req.params.id);
+    application.set(req.body);
+    await currentUser.save();
+    res.redirect(`/users/${currentUser._id}/applications/${req.params.id}`);
   } catch (err) {
     console.log(err);
     res.redirect('/');
